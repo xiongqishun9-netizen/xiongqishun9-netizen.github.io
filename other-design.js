@@ -38,6 +38,15 @@
   let origin;
   let scrollPosition;
   let previousBodyTop;
+  let mediaObserver;
+  const posterSizes = {
+    'zenless-burnice': [1440, 1440], 'zenless-caesar': [1440, 1440],
+    'zenless-lighter': [1440, 1440], 'zenless-key-art': [1600, 900],
+    'moonlight-blade': [1600, 900], 'honkai-impact': [1600, 901],
+    'tiny-lure': [734, 981], 'spring-romance': [1199, 1600],
+    'qing-dumpling': [1143, 1600], 'hutouju-midautumn': [1143, 1600],
+    'hutouju-giftbox': [1143, 1600], 'skateboard': [1160, 1261],
+  };
 
   videos.forEach(({ slug, title, detail }, index) => {
     const figure = document.createElement('figure');
@@ -49,7 +58,7 @@
     video.disableRemotePlayback = true;
     video.playsInline = true;
     video.preload = 'none';
-    video.poster = `./public/assets/videos/${slug}-poster.jpg?v=20261022b`;
+    video.dataset.poster = `./public/assets/videos/${slug}-poster.jpg?v=20261022b`;
     video.dataset.src = `./public/assets/videos/${slug}-preview.mp4?v=20261022b`;
     video.setAttribute('aria-label', title);
     video.addEventListener('contextmenu', (event) => event.preventDefault());
@@ -77,9 +86,11 @@
       const figure = document.createElement('figure');
       figure.className = `other-poster-item${wide ? ' is-wide' : ''}`;
       const image = document.createElement('img');
-      image.src = `./public/assets/posters/${slug}.jpg`;
+      image.dataset.src = `./public/assets/posters/${slug}.jpg`;
+      [image.width, image.height] = posterSizes[slug];
       image.alt = name;
-      image.loading = 'lazy';
+      image.loading = 'eager';
+      image.decoding = 'async';
       image.draggable = false;
       image.addEventListener('contextmenu', (event) => event.preventDefault());
       const caption = document.createElement('figcaption');
@@ -107,6 +118,23 @@
       document.documentElement.classList.add('reader-open');
       document.body.style.top = `-${scrollPosition}px`;
       dialog.querySelector('.other-viewport').scrollTop = 0;
+      const media = [...dialog.querySelectorAll('img[data-src], video[data-poster]')];
+      const loadMedia = (element) => {
+        if (element.tagName === 'VIDEO') element.poster = element.dataset.poster;
+        else element.src = element.dataset.src;
+      };
+      mediaObserver?.disconnect();
+      if ('IntersectionObserver' in window) {
+        mediaObserver = new IntersectionObserver((entries) => {
+          entries.forEach(({ target, isIntersecting }) => {
+            if (!isIntersecting) return;
+            loadMedia(target);
+            mediaObserver.unobserve(target);
+          });
+        }, { root: dialog.querySelector('.other-viewport'), rootMargin: '100% 0px' });
+        media.forEach((element) => mediaObserver.observe(element));
+      } else media.forEach(loadMedia);
+      if (media[0]) loadMedia(media[0]);
     });
   });
 
@@ -116,6 +144,7 @@
       if (event.target === dialog) dialog.close();
     });
     dialog.addEventListener('close', () => {
+      mediaObserver?.disconnect();
       if (dialog === dialogs.videos) {
         videoList.querySelectorAll('video').forEach((video) => {
           video.pause();

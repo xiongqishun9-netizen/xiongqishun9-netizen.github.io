@@ -44,7 +44,7 @@
         image.width = tile.width;
         image.height = tile.height;
         image.alt = `${entry.title} · 第 ${index + 1} 段 / 共 ${entry.tiles.length} 段`;
-        image.loading = index === 0 ? 'eager' : 'lazy';
+        image.loading = 'eager';
         image.decoding = 'async';
         image.draggable = false;
         image.style.aspectRatio = `${tile.width} / ${tile.height}`;
@@ -69,7 +69,7 @@
             target.src = target.dataset.src;
             imageObserver.unobserve(target);
           });
-        }, { root: viewport, rootMargin: '300px 0px' });
+        }, { root: viewport, rootMargin: '100% 0px' });
         images.slice(1).forEach((image) => imageObserver.observe(image));
       } else {
         images.slice(1).forEach((image) => { image.src = image.dataset.src; });

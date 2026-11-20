@@ -5,6 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="description" content="熊启顺视觉设计师个人作品集" />
     <title>熊启顺 | 视觉设计师作品集</title>
+    <link rel="preload" as="image" href="./public/assets/hero-landscape-v2-lossless.webp" fetchpriority="high" />
+    <link rel="preload" as="font" href="./public/assets/fonts/anton-regular.ttf" type="font/ttf" crossorigin />
     <link rel="stylesheet" href="./site.css?v=20261022e" />
     <link rel="stylesheet" href="./document-viewer.css?v=20261019e" />
     <link rel="stylesheet" href="./other-design.css?v=20261022e" />
@@ -34,9 +36,9 @@
       <section id="top" class="hero">
         <div class="hero-scene" aria-hidden="true">
           <div class="hero-artboard">
-            <div class="landscape-layer landscape-sky"><img src="./public/assets/hero-landscape-v2.png" alt="" fetchpriority="high" /></div>
-            <div class="landscape-layer landscape-mountains"><img src="./public/assets/hero-landscape-v2.png" alt="" /></div>
-            <div class="landscape-layer landscape-foreground"><img src="./public/assets/hero-landscape-v2.png" alt="" /></div>
+            <div class="landscape-layer landscape-sky"><img src="./public/assets/hero-landscape-v2-lossless.webp" alt="" fetchpriority="high" decoding="async" /></div>
+            <div class="landscape-layer landscape-mountains"><img src="./public/assets/hero-landscape-v2-lossless.webp" alt="" decoding="async" /></div>
+            <div class="landscape-layer landscape-foreground"><img src="./public/assets/hero-landscape-v2-lossless.webp" alt="" decoding="async" /></div>
           </div>
         </div>
 
@@ -64,7 +66,7 @@
         </div>
         <div class="about-layout" data-reveal="about">
           <div class="portrait-wrap">
-            <img src="./public/assets/profile-studio.png" alt="熊启顺的创意工作室卡通肖像" width="1681" height="936" loading="lazy" />
+            <img src="./public/assets/profile-studio-lossless.webp" alt="熊启顺的创意工作室卡通肖像" width="1681" height="936" loading="lazy" decoding="async" />
             <span>MR. XIONG / VISUAL DESIGNER</span>
             <small>FILE NO. 001 / XQS</small>
           </div>
@@ -93,7 +95,7 @@
                 </a>
               </div>
               <figure class="wechat-card">
-                <img src="./public/assets/wechat-qr-user.png" alt="熊启顺微信二维码" />
+            <img src="./public/assets/wechat-qr-user.png" alt="熊启顺微信二维码" loading="lazy" decoding="async" />
                 <figcaption>微信 / 扫码联系</figcaption>
               </figure>
             </div>
@@ -115,27 +117,27 @@
             </div>
 
             <article class="skill-planet has-native-tile planet-ps" data-orbit-index="0">
-              <img src="./public/assets/software-icons/photoshop-user.png" alt="" />
+              <img src="./public/assets/software-icons/photoshop-user.png" alt="" loading="lazy" decoding="async" />
               <div><strong>Photoshop</strong><span>图像处理 · 视觉合成</span></div>
             </article>
             <article class="skill-planet has-native-tile planet-ai" data-orbit-index="1">
-              <img src="./public/assets/software-icons/illustrator-user.png" alt="" />
+              <img src="./public/assets/software-icons/illustrator-user.png" alt="" loading="lazy" decoding="async" />
               <div><strong>Illustrator</strong><span>品牌图形 · 矢量设计</span></div>
             </article>
             <article class="skill-planet has-native-tile planet-figma" data-orbit-index="2">
-              <img src="./public/assets/software-icons/figma-user.png" alt="" />
+              <img src="./public/assets/software-icons/figma-user.png" alt="" loading="lazy" decoding="async" />
               <div><strong>Figma</strong><span>UI 界面 · 原型协作</span></div>
             </article>
             <article class="skill-planet has-native-tile planet-c4d" data-orbit-index="3">
-              <img src="./public/assets/software-icons/cinema4d-user.png" alt="" />
+              <img src="./public/assets/software-icons/cinema4d-user.png" alt="" loading="lazy" decoding="async" />
               <div><strong>Cinema 4D</strong><span>三维场景 · 动态视觉</span></div>
             </article>
             <article class="skill-planet has-native-tile planet-ae" data-orbit-index="4">
-              <img src="./public/assets/software-icons/aftereffects-user.png" alt="" />
+              <img src="./public/assets/software-icons/aftereffects-user.png" alt="" loading="lazy" decoding="async" />
               <div><strong>After Effects</strong><span>动效设计 · 视觉包装</span></div>
             </article>
             <article class="skill-planet has-native-tile planet-chatgpt" data-orbit-index="5">
-              <img src="./public/assets/software-icons/chatgpt-user.png" alt="" />
+              <img src="./public/assets/software-icons/chatgpt-user.png" alt="" loading="lazy" decoding="async" />
               <div><strong>ChatGPT</strong><span>创意辅助 · 内容策划</span></div>
             </article>
             <article class="skill-planet planet-gemini" data-orbit-index="6">
@@ -321,7 +323,7 @@
 
     <dialog class="certificate-dialog">
       <button type="button" class="dialog-close" aria-label="关闭">关闭</button>
-      <img src="./public/assets/certificate-creative-contest.png" alt="中国好创意大赛获奖证书" />
+      <img data-src="./public/assets/certificate-creative-contest.png" alt="中国好创意大赛获奖证书" decoding="async" />
       <p>中国好创意暨全国数字艺术设计大赛 · 湖北赛区本科组省三等奖</p>
     </dialog>
 
@@ -366,8 +368,9 @@
     </dialog>
     <script src="./public/assets/vendor/lucide.min.js"></script>
     <script src="./public/assets/documents/manifest.js?v=20261024a"></script>
-    <script src="./document-viewer.js?v=20261024a"></script>
-    <script src="./other-design.js?v=20261022e"></script>
+    <script src="./performance.js?v=20261120a"></script>
+    <script src="./document-viewer.js?v=20261120a"></script>
+    <script src="./other-design.js?v=20261120a"></script>
     <script>
       const body = document.body;
       const loader = document.querySelector('.site-loader');
@@ -405,7 +408,6 @@
       fitCover();
 
       let loadProgress = 0;
-      const loadStartedAt = performance.now();
       const progressTimer = window.setInterval(() => {
         loadProgress = Math.min(loadProgress + Math.ceil(Math.random() * 9), 94);
         loaderCount.textContent = String(loadProgress).padStart(3, '0');
@@ -415,22 +417,17 @@
       const finishLoading = () => {
         if (loadFinished) return;
         loadFinished = true;
-        const elapsed = performance.now() - loadStartedAt;
-        window.setTimeout(() => {
-          window.clearInterval(progressTimer);
-          loaderCount.textContent = '100';
-          loader.classList.add('is-complete');
-          body.classList.remove('is-loading');
-          body.classList.add('is-ready');
-          window.setTimeout(() => loader.setAttribute('aria-hidden', 'true'), 950);
-        }, Math.max(0, 900 - elapsed));
+        window.clearInterval(progressTimer);
+        loaderCount.textContent = '100';
+        loader.classList.add('is-complete');
+        body.classList.remove('is-loading');
+        body.classList.add('is-ready');
+        window.dispatchEvent(new Event('portfolio:ready'));
+        window.setTimeout(() => loader.setAttribute('aria-hidden', 'true'), 950);
       };
 
-      if (document.readyState === 'complete') {
-        finishLoading();
-      } else {
-        window.addEventListener('load', finishLoading, { once: true });
-      }
+      const titleFont = document.fonts.load('100px Anton');
+      Promise.allSettled([heroImage.decode(), titleFont]).then(finishLoading);
       window.setTimeout(finishLoading, 2200);
 
       window.addEventListener('scroll', () => {
@@ -540,7 +537,11 @@
       bindAccordion(categories, '.category-trigger', '.directory-projects');
       bindAccordion(document.querySelectorAll('.archive-row'), '.archive-trigger', '.archive-panel', true);
 
-      document.querySelector('.certificate-trigger').addEventListener('click', () => dialog.showModal());
+      document.querySelector('.certificate-trigger').addEventListener('click', () => {
+        const image = dialog.querySelector('img');
+        image.src = image.dataset.src;
+        dialog.showModal();
+      });
       document.querySelector('.dialog-close').addEventListener('click', () => dialog.close());
       dialog.addEventListener('click', (event) => {
         if (event.target === dialog) dialog.close();

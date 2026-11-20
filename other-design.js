@@ -124,17 +124,19 @@
         else element.src = element.dataset.src;
       };
       mediaObserver?.disconnect();
-      if ('IntersectionObserver' in window) {
+      if (dialog === dialogs.posters) {
+        mediaObserver = window.portfolioPerformance.observeImages(media, dialog.querySelector('.other-viewport'));
+      } else if ('IntersectionObserver' in window) {
         mediaObserver = new IntersectionObserver((entries) => {
           entries.forEach(({ target, isIntersecting }) => {
             if (!isIntersecting) return;
             loadMedia(target);
             mediaObserver.unobserve(target);
           });
-        }, { root: dialog.querySelector('.other-viewport'), rootMargin: '100% 0px' });
+        }, { root: dialog.querySelector('.other-viewport'), rootMargin: window.portfolioPerformance.conservative() ? '0px' : '100% 0px' });
         media.forEach((element) => mediaObserver.observe(element));
       } else media.forEach(loadMedia);
-      if (media[0]) loadMedia(media[0]);
+      if (media[0] && dialog !== dialogs.posters) loadMedia(media[0]);
     });
   });
 

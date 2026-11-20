@@ -62,22 +62,7 @@
       document.body.style.top = `-${scrollPosition}px`;
       viewport.scrollTo(0, 0);
       const images = [...pages.querySelectorAll('img')];
-      if ('IntersectionObserver' in window) {
-        imageObserver = new IntersectionObserver((entries) => {
-          entries.forEach(({ target, isIntersecting }) => {
-            if (!isIntersecting) return;
-            target.src = target.dataset.src;
-            imageObserver.unobserve(target);
-          });
-        }, { root: viewport, rootMargin: '100% 0px' });
-        images.slice(1).forEach((image) => imageObserver.observe(image));
-      } else {
-        images.slice(1).forEach((image) => { image.src = image.dataset.src; });
-      }
-      if (images[0]) {
-        images[0].fetchPriority = 'high';
-        images[0].src = images[0].dataset.src;
-      }
+      imageObserver = window.portfolioPerformance.observeImages(images, viewport);
     });
   });
 

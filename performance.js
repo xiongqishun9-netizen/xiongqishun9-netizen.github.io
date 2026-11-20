@@ -6,6 +6,30 @@
   const warmed = new Set();
   const queue = [];
   let active = false;
+  let mediaRoute = 'origin';
+  let mediaRouteReady = false;
+  let cdnRetryAfter = 0;
+  const CDN_BASE = 'https://cdn.jsdelivr.net/gh/xiongqishun9-netizen/xiongqishun9-netizen.github.io@4476a78e14abfcc4b478b078d2a7ad55e5ee5509/';
+  const announceRoute = () => navigator.serviceWorker?.controller?.postMessage({ type: 'XQS_MEDIA_ROUTE', route: mediaRoute });
+  const probeMediaRoute = async () => {
+    const path = 'public/assets/projects/experience-xiaoniu.jpg';
+    const measure = async (url) => {
+      const controller = new AbortController();
+      const timer = setTimeout(() => controller.abort(), 1800);
+      const started = performance.now();
+      try {
+        const response = await fetch(url, { method: 'HEAD', cache: 'no-store', credentials: 'omit', signal: controller.signal });
+        if (!response.ok || !response.headers.get('Content-Type')?.startsWith('image/')) throw new Error('Unavailable media route');
+        return performance.now() - started;
+      } finally { clearTimeout(timer); }
+    };
+    const [origin, edge] = await Promise.allSettled([measure(new URL(`./${path}`, document.baseURI)), measure(CDN_BASE + path)]);
+    if (edge.status === 'fulfilled' && (origin.status === 'rejected' ||
+        (edge.value < origin.value * .75 && origin.value - edge.value > 150))) mediaRoute = 'cdn';
+    mediaRouteReady = true;
+    announceRoute();
+  };
+  navigator.serviceWorker?.addEventListener('controllerchange', announceRoute);
 
   const drain = () => {
     if (active || !queue.length || document.hidden) return;
@@ -38,7 +62,7 @@
     let stopped = false;
     let active = 0;
     const compact = conservative();
-    const limit = compact ? 1 : 3;
+    let limit = compact ? 1 : 3;
     const waiting = new Set();
     let observer;
     const pump = () => {
@@ -57,16 +81,32 @@
     };
     const load = (image) => {
       if (image.getAttribute('src')) return;
+      announceRoute();
       active += 1;
       const settled = () => {
         image.removeEventListener('load', settled);
         image.removeEventListener('error', settled);
         active -= 1;
+        if (image === images[0] && compact && !constrained()) limit = 2;
         pump();
       };
       image.addEventListener('load', settled);
       image.addEventListener('error', settled);
-      image.src = image.dataset.src;
+      const source = new URL(image.dataset.src, document.baseURI);
+      const assetRoot = new URL('./public/assets/', document.baseURI).pathname;
+      const relative = source.pathname.slice(assetRoot.length);
+      if (mediaRoute === 'cdn' && Date.now() >= cdnRetryAfter && !navigator.serviceWorker?.controller &&
+          source.origin === location.origin && source.pathname.startsWith(assetRoot) &&
+          /^(documents|posters)\//.test(relative)) {
+        image.crossOrigin = 'anonymous';
+        image.addEventListener('error', (event) => {
+          event.stopImmediatePropagation();
+          cdnRetryAfter = Date.now() + 60000;
+          image.removeAttribute('crossorigin');
+          image.src = image.dataset.src;
+        }, { once: true, capture: true });
+        image.src = CDN_BASE + 'public/assets/' + relative;
+      } else image.src = image.dataset.src;
     };
     // On touch screens the first tile gets the connection to itself before the next visible tile.
     if (images[0]) {
@@ -89,7 +129,11 @@
     }
     return { disconnect() { stopped = true; waiting.clear(); observer?.disconnect(); } };
   };
-  window.portfolioPerformance = { warmImage, conservative, observeImages };
+  window.portfolioPerformance = {
+    warmImage, conservative, observeImages,
+    get mediaRoute() { return mediaRoute; },
+    get mediaRouteReady() { return mediaRouteReady; },
+  };
 
   const deferLargeImages = () => {
     const images = [...document.querySelectorAll('img[data-deferred-src]')];
@@ -136,7 +180,8 @@
   }
 
   const registerCache = () => {
-    if ('serviceWorker' in navigator) {
+    probeMediaRoute().catch(() => {});
+    if (navigator.serviceWorker) {
       navigator.serviceWorker.register('./sw.js', { updateViaCache: 'none' }).catch(() => {});
     }
   };

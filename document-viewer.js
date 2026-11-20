@@ -38,6 +38,15 @@
       reader.querySelector('#document-category').textContent = entry.category;
       error.hidden = true;
       imageObserver?.disconnect();
+      pages.style.backgroundImage = '';
+      const cover = link.querySelector('img');
+      const hasCover = cover?.complete && cover.naturalWidth > 0;
+      if (hasCover) {
+        pages.style.backgroundImage = `url(${JSON.stringify(cover.currentSrc)})`;
+        pages.style.backgroundSize = '100% auto';
+        pages.style.backgroundPosition = 'top center';
+        pages.style.backgroundRepeat = 'no-repeat';
+      }
       const fragment = document.createDocumentFragment();
       entry.tiles.forEach((tile, index) => {
         const image = new Image();
@@ -49,6 +58,15 @@
         image.draggable = false;
         image.style.aspectRatio = `${tile.width} / ${tile.height}`;
         image.dataset.src = tile.src;
+        if (index === 0 && hasCover) {
+          image.style.opacity = '0';
+          const showFullImage = () => {
+            image.style.opacity = '';
+            if (pages.contains(image)) pages.style.backgroundImage = '';
+          };
+          image.addEventListener('load', showFullImage, { once: true });
+          image.addEventListener('error', showFullImage, { once: true });
+        }
         image.addEventListener('error', () => { error.hidden = false; }, { once: true });
         fragment.appendChild(image);
       });
@@ -106,5 +124,6 @@
     window.scrollTo({ top: scrollPosition, behavior: 'instant' });
     origin?.focus({ preventScroll: true });
     pages.replaceChildren();
+    pages.style.backgroundImage = '';
   });
 })();

@@ -918,6 +918,10 @@ body.is-loading .hero-line {
   line-height: 1.75;
 }
 
+.orbit-viewport {
+  min-width: 0;
+}
+
 .orbit-system {
   --software-icon-radius: 12px;
   --software-icon-size: 96px;
@@ -2192,16 +2196,23 @@ body.is-loading .hero-line {
     max-width: 100%;
   }
 
-  .orbit-system {
-    --software-icon-size: clamp(48px, 14vw, 64px);
-    --software-icon-radius: 8px;
-    --mobile-orbit-height: max(340px, min(110vw, 460px));
+  .orbit-viewport {
+    position: relative;
     width: 100%;
-    height: var(--mobile-orbit-height);
-    min-height: 340px;
-    margin-block: calc(var(--mobile-orbit-height) * -.075);
-    transform: scale(.85);
-    transform-origin: center;
+    aspect-ratio: 1120 / 704;
+  }
+
+  .orbit-system {
+    --software-icon-size: 96px;
+    --software-icon-radius: 12px;
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 1120px;
+    height: 704px;
+    min-height: 0;
+    transform: scale(var(--mobile-orbit-scale, .3));
+    transform-origin: top left;
   }
 
   .orbit-system::before,
@@ -2210,34 +2221,16 @@ body.is-loading .hero-line {
   }
 
   .orbit-particles {
-    display: none;
+    display: block;
+  }
+
+  .orbit-particles i {
+    animation: none;
+    opacity: .25;
   }
 
   .skill-satellites {
     display: none;
-  }
-
-  .orbit-core {
-    width: min(52%, 13rem);
-    gap: .65rem;
-  }
-
-  .orbit-core strong {
-    font-size: 1.65rem;
-  }
-
-  .orbit-core span {
-    max-width: 88%;
-    font-size: .5rem;
-    line-height: 1.6;
-  }
-
-  .orbit-system.is-dynamic .skill-planet {
-    padding: .65rem;
-  }
-
-  .skill-planet div {
-    width: 9rem;
   }
 
   .wechat-card {

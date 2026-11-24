@@ -7,7 +7,7 @@
     <title>熊启顺 | 视觉设计师作品集</title>
     <link rel="preload" as="image" href="./public/assets/hero-landscape-v2-lossless.webp" fetchpriority="high" />
     <link rel="preload" as="font" href="./public/assets/fonts/anton-regular.ttf" type="font/ttf" crossorigin />
-    <link rel="stylesheet" href="./site.css?v=20261022e" />
+    <link rel="stylesheet" href="./site.css?v=20261124b" />
     <link rel="stylesheet" href="./document-viewer.css?v=20261019e" />
     <link rel="stylesheet" href="./other-design.css?v=20261022e" />
   </head>
@@ -476,6 +476,7 @@
         orbitCoreDetail.textContent = '二维视觉 · UI · 三维 · AIGC';
       };
 
+      let skillResetTimer;
       orbitPlanets.forEach((planet) => {
         planet.tabIndex = 0;
         planet.setAttribute('aria-label', `${planet.querySelector('strong').textContent}：${planet.querySelector('div span').textContent}`);
@@ -487,6 +488,12 @@
         planet.addEventListener('mouseleave', resetCore);
         planet.addEventListener('focusin', showSkill);
         planet.addEventListener('focusout', resetCore);
+        planet.addEventListener('click', () => {
+          if (!window.matchMedia('(pointer: coarse)').matches) return;
+          clearTimeout(skillResetTimer);
+          showSkill();
+          skillResetTimer = setTimeout(resetCore, 2400);
+        });
       });
 
       const bindAccordion = (items, triggerSelector, panelSelector, persistOnClick = false) => {
@@ -582,25 +589,30 @@
         let orbitPhase = -Math.PI / 2;
         let lastFrameTime = performance.now();
         let entranceTime = reduceMotion ? 2000 : 0;
-        const softwareSection = orbitSystem.closest('[data-reveal]');
         const tilt = -14 * Math.PI / 180;
+        orbitSystem.classList.add('is-dynamic');
+        let sectionVisible = false;
 
         const animateOrbit = (time) => {
+          const compact = window.innerWidth <= 640;
+          if (compact && !reduceMotion && time - lastFrameTime < 32) {
+            orbitFrame = window.requestAnimationFrame(animateOrbit);
+            return;
+          }
           const delta = Math.min(time - lastFrameTime, 40);
           lastFrameTime = time;
           const bounds = orbitSystem.getBoundingClientRect();
-          const sectionVisible = bounds.bottom > 0 && bounds.top < window.innerHeight && softwareSection.classList.contains('is-in-view');
-          const compact = window.innerWidth <= 640;
-          orbitSystem.classList.toggle('is-dynamic', !compact);
 
-          if ((sectionVisible || reduceMotion) && !compact) {
-            const paused = readerDialog.open || orbitPlanets.some(planet => planet.matches(':hover, :focus-visible'));
+          if (sectionVisible || reduceMotion) {
+            const finePointer = window.matchMedia('(hover: hover) and (pointer: fine)').matches;
+            const paused = !!document.querySelector('dialog[open]') || orbitPlanets.some(planet =>
+              planet.matches(':focus-visible') || (finePointer && planet.matches(':hover')));
             if (!paused && !reduceMotion) {
               entranceTime = Math.min(entranceTime + delta, 2000);
               orbitPhase = (orbitPhase + delta * 0.00010) % (Math.PI * 2);
             }
-            const radiusX = Math.min(bounds.width * 0.39, 450);
-            const radiusY = Math.min(bounds.height * 0.28, 244);
+            const radiusX = Math.min(bounds.width * (compact ? .36 : .39), 450);
+            const radiusY = Math.min(bounds.height * (compact ? .23 : .28), 244);
             orbitSystem.style.setProperty('--track-width', `${radiusX * 2}px`);
             orbitSystem.style.setProperty('--track-height', `${radiusY * 2}px`);
 
@@ -620,17 +632,29 @@
             });
           }
 
-          if (!reduceMotion) orbitFrame = window.requestAnimationFrame(animateOrbit);
+          if (!reduceMotion && sectionVisible && !document.hidden) orbitFrame = window.requestAnimationFrame(animateOrbit);
         };
 
         if (reduceMotion) new ResizeObserver(() => animateOrbit(performance.now())).observe(orbitSystem);
-        else orbitFrame = window.requestAnimationFrame(animateOrbit);
+        else if ('IntersectionObserver' in window) {
+          new IntersectionObserver(([entry]) => {
+            sectionVisible = entry.isIntersecting;
+            window.cancelAnimationFrame(orbitFrame);
+            if (sectionVisible && !document.hidden) {
+              lastFrameTime = performance.now();
+              orbitFrame = window.requestAnimationFrame(animateOrbit);
+            }
+          }).observe(orbitSystem);
+        } else {
+          sectionVisible = true;
+          orbitFrame = window.requestAnimationFrame(animateOrbit);
+        }
 
         document.addEventListener('visibilitychange', () => {
           if (reduceMotion) return;
           if (document.hidden) {
             window.cancelAnimationFrame(orbitFrame);
-          } else {
+          } else if (sectionVisible) {
             lastFrameTime = performance.now();
             orbitFrame = window.requestAnimationFrame(animateOrbit);
           }

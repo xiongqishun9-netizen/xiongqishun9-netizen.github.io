@@ -2193,16 +2193,16 @@ body.is-loading .hero-line {
   }
 
   .orbit-system {
-    display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 2.8rem 1rem;
-    min-height: 0;
-    padding-top: 1rem;
+    --software-icon-size: clamp(48px, 14vw, 64px);
+    --software-icon-radius: 8px;
+    width: 100%;
+    height: max(340px, min(110vw, 460px));
+    min-height: 340px;
   }
 
   .orbit-system::before,
   .orbit-system::after {
-    display: none;
+    display: block;
   }
 
   .orbit-particles {
@@ -2213,41 +2213,23 @@ body.is-loading .hero-line {
     display: none;
   }
 
-  .orbit-core,
-  .skill-planet {
-    position: relative;
-    inset: auto;
-  }
-
   .orbit-core {
-    grid-column: 1 / -1;
-    width: 10rem;
-    justify-self: center;
-    transform: none;
+    width: min(52%, 13rem);
+    gap: .65rem;
   }
 
-  .has-motion [data-reveal="software"] .orbit-core {
-    transform: scale(0.45);
+  .orbit-core strong {
+    font-size: 1.65rem;
   }
 
-  .has-motion [data-reveal="software"].is-in-view .orbit-core {
-    transform: scale(1);
+  .orbit-core span {
+    max-width: 88%;
+    font-size: .5rem;
+    line-height: 1.6;
   }
 
-  .skill-planet {
-    --planet-size: 88px;
-    justify-self: center;
-  }
-
-  .skill-planet img,
-  .skill-planet.has-native-tile img {
-    width: 3.4rem;
-    height: 3.4rem;
-  }
-
-  .skill-planet.has-native-tile img {
-    width: 100%;
-    height: 100%;
+  .orbit-system.is-dynamic .skill-planet {
+    padding: .65rem;
   }
 
   .skill-planet div {
@@ -2374,6 +2356,15 @@ body.is-loading .hero-line {
     gap: 1.2rem;
     margin-top: 2.5rem;
   }
+}
+
+@media (hover: none) {
+  .has-motion [data-reveal="software"].is-in-view .orbit-system.is-dynamic .skill-planet:hover {
+    --hover-boost: 0;
+    z-index: var(--orbit-layer, 10);
+    box-shadow: none;
+  }
+  .skill-planet div { display: none; }
 }
 
 @media (max-width: 480px) {

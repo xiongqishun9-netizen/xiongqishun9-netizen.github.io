@@ -7,7 +7,7 @@
     <title>熊启顺 | 视觉设计师作品集</title>
     <link rel="preload" as="image" href="./public/assets/hero-landscape-v2-lossless.webp" fetchpriority="high" />
     <link rel="preload" as="font" href="./public/assets/fonts/anton-regular.ttf" type="font/ttf" crossorigin />
-    <link rel="stylesheet" href="./site.css?v=20261124b" />
+    <link rel="stylesheet" href="./site.css?v=20261124c" />
     <link rel="stylesheet" href="./document-viewer.css?v=20261019e" />
     <link rel="stylesheet" href="./other-design.css?v=20261022e" />
   </head>
@@ -601,7 +601,8 @@
           }
           const delta = Math.min(time - lastFrameTime, 40);
           lastFrameTime = time;
-          const bounds = orbitSystem.getBoundingClientRect();
+          const sceneWidth = orbitSystem.clientWidth;
+          const sceneHeight = orbitSystem.clientHeight;
 
           if (sectionVisible || reduceMotion) {
             const finePointer = window.matchMedia('(hover: hover) and (pointer: fine)').matches;
@@ -611,8 +612,8 @@
               entranceTime = Math.min(entranceTime + delta, 2000);
               orbitPhase = (orbitPhase + delta * 0.00010) % (Math.PI * 2);
             }
-            const radiusX = Math.min(bounds.width * (compact ? .36 : .39), 450);
-            const radiusY = Math.min(bounds.height * (compact ? .23 : .28), 244);
+            const radiusX = Math.min(sceneWidth * (compact ? .36 : .39), 450);
+            const radiusY = Math.min(sceneHeight * (compact ? .23 : .28), 244);
             orbitSystem.style.setProperty('--track-width', `${radiusX * 2}px`);
             orbitSystem.style.setProperty('--track-height', `${radiusY * 2}px`);
 

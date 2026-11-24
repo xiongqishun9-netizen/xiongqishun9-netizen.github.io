@@ -2195,9 +2195,13 @@ body.is-loading .hero-line {
   .orbit-system {
     --software-icon-size: clamp(48px, 14vw, 64px);
     --software-icon-radius: 8px;
+    --mobile-orbit-height: max(340px, min(110vw, 460px));
     width: 100%;
-    height: max(340px, min(110vw, 460px));
+    height: var(--mobile-orbit-height);
     min-height: 340px;
+    margin-block: calc(var(--mobile-orbit-height) * -.075);
+    transform: scale(.85);
+    transform-origin: center;
   }
 
   .orbit-system::before,

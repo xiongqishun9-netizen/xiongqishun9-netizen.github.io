@@ -12,7 +12,8 @@ self.addEventListener('message', (event) => {
 
 const fetchMedia = async (request, url) => {
   const relative = url.pathname.slice(assetRoot.length);
-  if (preferCdn && Date.now() >= cdnRetryAfter && /^(documents|posters|projects)\//.test(relative)) {
+  if (preferCdn && Date.now() >= cdnRetryAfter && !relative.startsWith('documents/resume/') &&
+      /^(documents|posters|projects)\//.test(relative)) {
     const controller = new AbortController();
     const timer = setTimeout(() => controller.abort(), 2000);
     try {

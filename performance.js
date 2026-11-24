@@ -97,6 +97,7 @@
       const relative = source.pathname.slice(assetRoot.length);
       if (mediaRoute === 'cdn' && Date.now() >= cdnRetryAfter && !navigator.serviceWorker?.controller &&
           source.origin === location.origin && source.pathname.startsWith(assetRoot) &&
+          !relative.startsWith('documents/resume/') &&
           /^(documents|posters)\//.test(relative)) {
         image.crossOrigin = 'anonymous';
         image.addEventListener('error', (event) => {
